@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Platforms>x64</Platforms>
+    <UserSecretsId>7c71f61a-0d4c-4b82-8cc0-9457c589381a</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\amethyst\amethyst.csproj" />
+    <ProjectReference Include="..\decodl\decodl.csproj" />
+    <ProjectReference Include="..\odl\odl.csproj" />
+  </ItemGroup>
+
+</Project>
