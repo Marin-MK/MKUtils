@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using odl;
 
 namespace MKUtils;
 
@@ -54,7 +55,7 @@ public class DynamicCallbackManager<T> where T : IProgressFactor
             {
                 if (!seenFirstCompletion)
                 {
-                    this.OnProgress?.Invoke(progress);
+                    Graphics.Schedule(() => this.OnProgress?.Invoke(progress));
                     seenFirstCompletion = true;
                 }
                 return;
@@ -65,7 +66,7 @@ public class DynamicCallbackManager<T> where T : IProgressFactor
             if (stopwatch.ElapsedMilliseconds >= CooldownBetweenUpdates.Value.Milliseconds)
             {
                 stopwatch.Restart();
-                this.OnProgress?.Invoke(progress);
+                Graphics.Schedule(() => this.OnProgress?.Invoke(progress));
             }
         }
         else if (FixedUpdateCount.HasValue)
@@ -74,10 +75,10 @@ public class DynamicCallbackManager<T> where T : IProgressFactor
             if (!seenFirstUpdate && ForceFirstUpdate || delta > 1f / FixedUpdateCount.Value)
             {
                 lastProgressUpdate = progress.Factor;
-                this.OnProgress?.Invoke(progress);
+                Graphics.Schedule(() => this.OnProgress?.Invoke(progress));
             }
         }
-        else this.OnProgress?.Invoke(progress);
+        else Graphics.Schedule(() => this.OnProgress?.Invoke(progress));
         seenFirstUpdate = true;
     }
 

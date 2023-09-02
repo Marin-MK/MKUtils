@@ -1,41 +1,30 @@
-﻿using System.Diagnostics;
+﻿using odl;
+using System.Diagnostics;
 
 namespace MKUtils;
 
 public static class MKUtils
 {
-    public static string ProgramFilesPath
+    public static string ProgramFilesPath => ODL.Platform switch
     {
-        get
-        {
-            string folder = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles).Replace('\\', '/');
-            if (string.IsNullOrEmpty(folder))
-            {
-                if (Directory.Exists("/usr/local/bin")) folder = "/usr/local/bin";
-                else
-                {
-                    folder = Environment.GetFolderPath(Environment.SpecialFolder.Personal).Replace('\\', '/');
-                    if (string.IsNullOrEmpty(folder))
-                    {
-                        if (Directory.Exists("/opt")) folder = "/opt";
-                    }
-                }
-            }
-            return folder;
-        }
-    }
+        odl.Platform.Windows or odl.Platform.MacOS => Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles).Replace('\\', '/'),
+        odl.Platform.Linux => "/usr/local/bin",
+        _ => throw new NotImplementedException()
+    };
 
-	public static string AppDataFolder => odl.Graphics.Platform switch
-	{
-		odl.Platform.Windows => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).Replace('\\', '/'),
-		odl.Platform.Linux => new Func<string>(() =>
-		{
-			string sudoUser = Environment.GetEnvironmentVariable("SUDO_USER");
-			if (!string.IsNullOrEmpty(sudoUser)) return $"/home/{sudoUser}";
-			else return Environment.GetEnvironmentVariable("HOME");
-		})(),
-		_ => throw new NotImplementedException()
-	};
+    public static string AppDataFolder => ODL.Platform switch
+    {
+        odl.Platform.Windows => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).Replace('\\', '/'),
+        odl.Platform.Linux => new Func<string>(() =>
+        {
+            string sudoUser = Environment.GetEnvironmentVariable("SUDO_USER");
+            if (!string.IsNullOrEmpty(sudoUser)) return $"/home/{sudoUser}";
+            else return Environment.GetEnvironmentVariable("HOME")?.Replace('\\', '/');
+        })(),
+        odl.Platform.MacOS => Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Library", "Application Support").Replace('\\', '/'),
+        _ => throw new NotImplementedException()
+    };
 
 	public static readonly (string Name, long Unit)[] ByteMagnitudes =
     {

@@ -199,7 +199,7 @@ public struct DownloadProgress : IProgressFactor
 {
     internal static readonly (string Name, long Unit)[] ByteMagnitudes =
     {
-        ("B", (long) Math.Pow(1024, 0)),
+        ("B",   (long) Math.Pow(1024, 0)),
         ("KiB", (long) Math.Pow(1024, 1)),
         ("MiB", (long) Math.Pow(1024, 2)),
         ("GiB", (long) Math.Pow(1024, 3)),
@@ -211,7 +211,7 @@ public struct DownloadProgress : IProgressFactor
     public long BytesRead;
     public long TotalBytes;
     public long BytesLeft => TotalBytes - BytesRead;
-    public double Factor { get => (double) BytesRead / TotalBytes; }
+    public double Factor => (double) BytesRead / TotalBytes;
     public double Percentage => Factor * 100;
 
     public DownloadProgress(long bytesRead, long totalBytes)
