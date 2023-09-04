@@ -67,8 +67,8 @@ public static partial class VersionMetadata
                 Logger.Instance?.Error($"Source failed: {ex.Message}\n{ex.StackTrace}");
             }
         }
-        if (sources.Length == 0) Logger.Instance?.WriteLine("No sources found.");
-        else Logger.Instance?.WriteLine($"Metadata succesfully read: {success}");
+        if (sources.Length == 0) Logger.Instance?.WriteLine("No metadata sources found.");
+        else Logger.Instance?.WriteLine($"Metadata successfully read: {success}");
         return success;
     }
 

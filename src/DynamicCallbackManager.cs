@@ -55,7 +55,7 @@ public class DynamicCallbackManager<T> where T : IProgressFactor
             {
                 if (!seenFirstCompletion)
                 {
-                    Graphics.Schedule(() => this.OnProgress?.Invoke(progress));
+                    this.OnProgress?.Invoke(progress);
                     seenFirstCompletion = true;
                 }
                 return;
@@ -66,7 +66,7 @@ public class DynamicCallbackManager<T> where T : IProgressFactor
             if (stopwatch.ElapsedMilliseconds >= CooldownBetweenUpdates.Value.Milliseconds)
             {
                 stopwatch.Restart();
-                Graphics.Schedule(() => this.OnProgress?.Invoke(progress));
+                this.OnProgress?.Invoke(progress);
             }
         }
         else if (FixedUpdateCount.HasValue)
@@ -75,10 +75,10 @@ public class DynamicCallbackManager<T> where T : IProgressFactor
             if (!seenFirstUpdate && ForceFirstUpdate || delta > 1f / FixedUpdateCount.Value)
             {
                 lastProgressUpdate = progress.Factor;
-                Graphics.Schedule(() => this.OnProgress?.Invoke(progress));
+                this.OnProgress?.Invoke(progress);
             }
         }
-        else Graphics.Schedule(() => this.OnProgress?.Invoke(progress));
+        else this.OnProgress?.Invoke(progress);
         seenFirstUpdate = true;
     }
 
