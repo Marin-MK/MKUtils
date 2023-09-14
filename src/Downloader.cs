@@ -123,7 +123,6 @@ public class Downloader
                 bool reported1 = false;
                 DownloadProgress progressObject = new DownloadProgress(0, totalBytes);
                 Logger.Instance?.WriteLine($"Reading {progressObject.TotalBytesToString()} with buffer size of {buffer.Length}.");
-                callbackManager?.Start();
 
                 double lastReported = 0;
                 while (totalRead < totalBytes)

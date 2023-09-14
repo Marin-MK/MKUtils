@@ -5,13 +5,16 @@ namespace MKUtils;
 
 public class DynamicCallbackManager<T> where T : IProgressFactor
 {
+    public string Status { get; protected set; } = "Loading...";
     public TimeSpan? CooldownBetweenUpdates { get; protected set; }
     public int? FixedUpdateCount { get; protected set; }
-    public Action<T>? OnProgress { get; protected set; }
-    public Action? OnIdle { get; protected set; }
-    public Action<Exception>? OnError { get; protected set; }
     public bool ForceFirstUpdate { get; set; } = false;
     public bool ForceSingleCompleteCall { get; set; } = true;
+
+    public Action<string>? OnStatusChanged;
+    public Action<T>? OnProgress;
+    public Action? OnIdle;
+    public Action<Exception>? OnError;
 
     private double lastProgressUpdate = 0;
     private Stopwatch stopwatch = new Stopwatch();
@@ -47,6 +50,12 @@ public class DynamicCallbackManager<T> where T : IProgressFactor
         stopwatch.Start();
     }
 
+    public void SetStatus(string status)
+    {
+        this.Status = status;
+        this.OnStatusChanged?.Invoke(status);
+    }
+
     public void Update(T progress)
     {
         if (progress.Factor == 1)
@@ -63,9 +72,11 @@ public class DynamicCallbackManager<T> where T : IProgressFactor
         }
         if (CooldownBetweenUpdates.HasValue)
         {
-            if (stopwatch.ElapsedMilliseconds >= CooldownBetweenUpdates.Value.Milliseconds)
+            bool isRunning = stopwatch.IsRunning;
+            if (!isRunning || stopwatch.ElapsedMilliseconds >= CooldownBetweenUpdates.Value.Milliseconds)
             {
-                stopwatch.Restart();
+                if (!isRunning) stopwatch.Start();
+                else stopwatch.Restart();
                 this.OnProgress?.Invoke(progress);
             }
         }
@@ -91,4 +102,15 @@ public class DynamicCallbackManager<T> where T : IProgressFactor
 public interface IProgressFactor
 {
     public double Factor { get; }
+}
+
+public class SimpleProgress : IProgressFactor
+{
+    public double Factor { get; protected set; }
+
+    public SimpleProgress SetFactor(double factor)
+    {
+        this.Factor = factor;
+        return this;
+    }
 }
