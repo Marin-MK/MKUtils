@@ -10,6 +10,8 @@ public static partial class VersionMetadata
     internal static ProgramDTO Program;
     internal static InstallerDTO Installer;
 
+    public static List<List<string>> Kits;
+
     public static string ProgramDisplayName => Program.DisplayName;
     public static string ProgramVersion => Program.Version;
     public static string ProgramAuthor => Program.Author;
@@ -59,6 +61,7 @@ public static partial class VersionMetadata
                 Core = data.Core;
                 Program = data.Program;
                 Installer = data.Installer;
+                Kits = data.Kits;
                 success = true;
                 break;
             }
@@ -99,6 +102,8 @@ internal struct MainDTO
     public CoreDTO Core;
     [JsonPropertyName("installer")]
     public InstallerDTO Installer;
+    [JsonPropertyName("kits")]
+    public List<List<string>> Kits;
 }
 
 internal struct ProgramDTO
